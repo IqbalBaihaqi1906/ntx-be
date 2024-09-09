@@ -37,7 +37,7 @@ exports.refactoreMe2 = async (req, res) => {
     if (!userId || !values) {
       return res.status(400).json({
         statusCode: 400,
-        message: "Invalid Request Body",
+        message: "Please provied all required fields",
         success: false,
       });
     }
@@ -61,8 +61,10 @@ exports.refactoreMe2 = async (req, res) => {
     }
 
     const formattedValues = `{${values.join(',')}}`;
-    await db.sequelize.query(
-      `INSERT INTO surveys ("userId", "values", "createdAt", "updatedAt") VALUES (${userId}, '${formattedValues}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+    const newSurvey = await db.sequelize.query(
+      `INSERT INTO surveys ("userId", "values", "createdAt", "updatedAt") 
+       VALUES (${userId}, '${formattedValues}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) 
+       RETURNING id`,
     );
 
     await db.sequelize.query(
@@ -72,7 +74,7 @@ exports.refactoreMe2 = async (req, res) => {
     return res.status(200).json({
       statusCode: 200,
       success: true,
-      data: "Survey sent successfully!",
+      data: newSurvey[0][0],
     });
   } catch (error) {
     console.error('Error insert surveys:', error);

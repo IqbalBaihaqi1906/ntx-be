@@ -28,9 +28,9 @@ CREATE TABLE public.users (
 );
 
 INSERT INTO public.users ("id",digits,"fotoUrl","workType","positionTitle",lat,lon,company,"isLogin","createdAt","updatedAt",dovote,dosurvey,dofeedback,fullname,"cuurentLeave", "role", "password") VALUES
-	 (1,'DFA','','WFO',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33+07','2022-12-22 21:05:32.377+07',true,true,false,'M. Daffa Quraisy',0,'admin','shouldbeencrypted'),
-	 (2,'HTA','','WFH',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33+07','2022-12-22 15:04:01.302+07',true,true,false,'R. Hernanta Subagya',0, 'admin','shouldbeencrypted'),
-	 (3,'HFW','','WFO',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33.226343+07','2022-12-22 15:03:46.848+07',true,false,false,'Hafidz Wibowo',0, 'user','shouldbeencrypted');
+	 (1,'DFA','','WFO',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33+07','2022-12-22 21:05:32.377+07',true,true,false,'M. Daffa Quraisy',0,'admin','$2b$10$MeaikGKN6AiuViLLKowUQ.If.ywJ59idXhXeDNv3ycn2aUZg99nKq'),
+	 (2,'HTA','','WFH',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33+07','2022-12-22 15:04:01.302+07',true,true,false,'R. Hernanta Subagya',0, 'user','$2b$10$MeaikGKN6AiuViLLKowUQ.If.ywJ59idXhXeDNv3ycn2aUZg99nKq'),
+	 (3,'HFW','','WFO',NULL,0.0,0.0,'NTX',true,'2021-12-15 15:06:33.226343+07','2022-12-22 15:03:46.848+07',true,false,false,'Hafidz Wibowo',0, 'user','$2b$10$MeaikGKN6AiuViLLKowUQ.If.ywJ59idXhXeDNv3ycn2aUZg99nKq');
 
 -- public.surveys definition
 
