@@ -1,5 +1,7 @@
 const db = require("../models");
 const { QueryTypes, Op } = require("sequelize");
+const WebSocket = require('ws');
+const axios = require('axios');
 // const Model = db.Model;
 // const { Op } = require("sequelize");
 
@@ -28,39 +30,6 @@ exports.refactoreMe1 = async (req, res) => {
 
 exports.refactoreMe2 = async (req, res) => {
   // function ini untuk menjalakan query sql insert dan mengupdate field "dosurvey" yang ada di table user menjadi true, jika melihat data yang di berikan, salah satu usernnya memiliki dosurvey dengan data false
-  // Survey.create({
-  //   userId: req.body.userId,
-  //   values: req.body.values, // [] kirim array
-  // })
-  //   .then((data) => {
-  //     User.update(
-  //       {
-  //         dosurvey: true,
-  //       },
-  //       {
-  //         where: { id: req.body.id },
-  //       }
-  //     )
-  //       .then(() => {
-  //         console.log("success");
-  //       })
-  //       .catch((err) => console.log(err));
-
-  //     res.status(201).send({
-  //       statusCode: 201,
-  //       message: "Survey sent successfully!",
-  //       success: true,
-  //       data,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     res.status(500).send({
-  //       statusCode: 500,
-  //       message: "Cannot post survey.",
-  //       success: false,
-  //     });
-  //   });
   try {
     const { userId, values } = req.body;
 
@@ -114,8 +83,42 @@ exports.refactoreMe2 = async (req, res) => {
   }
 };
 
-exports.callmeWebSocket = (req, res) => {
+exports.callmeWebSocket = (server) => {
   // do something
+  let wss = new WebSocket.Server({ server });
+
+  wss.on('connection', async (ws) => {
+    try {
+      console.log('Client connected');
+
+      ws.send(JSON.stringify({ message: 'connected' }));
+
+      const fetchAndSend = async () => {
+        try {
+          const { data } = await axios.get('https://ltm-prod-api.radware.com/map/attacks?limit=10');
+
+          ws.send(JSON.stringify(data));
+        } catch (error) {
+          console.log('Error fetching data:', error);
+        }
+      }
+
+      fetchAndSend();
+
+      const interval = setInterval(fetchAndSend, 3 * 60 * 1000);
+
+      ws.on('close', () => {
+        console.log('Client disconnected');
+        clearInterval(interval); 
+      });
+
+      ws.on('error', (error) => {
+        console.log('WebSocket error:', error);
+      });
+    } catch (error) {
+      console.log('Error on websocket connection:', error);
+    }
+  });
 };
 
 exports.getData = (req, res) => {
