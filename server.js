@@ -35,7 +35,8 @@ app.get("/", (req, res) => {
 });
 
 // routes
-// require("./app/routes/exaole.routes")(app);
+require("./app/routes/exampleRoutes")(app);
+// app.use(router);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 7878;

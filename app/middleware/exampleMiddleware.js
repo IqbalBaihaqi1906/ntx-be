@@ -3,6 +3,7 @@ const db = require("../models");
 
 exampleMiddlewareFunction = (req, res, next) => {
   // do something
+  next()
 };
 
 const verify = {

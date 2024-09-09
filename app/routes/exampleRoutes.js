@@ -13,16 +13,22 @@ module.exports = (app) => {
   const router = require("express").Router();
 
   router.get(
-    "/",
-    [exampleMiddleware.exampleMiddleware],
-    exampleController.exampleFunction
+    "/refactorme1",
+    // exampleMiddleware.exampleMiddlewareFunction,
+    exampleController.refactoreMe1
   );
 
-  router.get(
-    "/",
-    [exampleMiddleware.exampleMiddleware],
-    exampleController.exampleFunction
+  router.post(
+    "/refactorme2",
+    // exampleMiddleware.exampleMiddlewareFunction,
+    exampleController.refactoreMe2
   );
 
-  app.use("/api/data", router);
+  // router.get(
+  //   "/",
+  //   [exampleMiddleware.exampleMiddleware],
+  //   exampleController.exampleFunction
+  // );
+
+  app.use("/api/data/", router);
 };
