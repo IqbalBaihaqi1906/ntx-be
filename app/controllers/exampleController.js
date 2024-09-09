@@ -2,6 +2,7 @@ const db = require("../models");
 const { QueryTypes, Op } = require("sequelize");
 const WebSocket = require('ws');
 const axios = require('axios');
+const redis = require("../config/redis");
 // const Model = db.Model;
 // const { Op } = require("sequelize");
 
@@ -144,6 +145,19 @@ exports.getData = async (req, res) => {
       });
     }
 
+    const cacheKey = `data-${type}`;
+
+    const cachedData = await redis.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Cached !!')
+      return res.status(200).json({
+        statusCode: 200,
+        success: true,
+        data: JSON.parse(cachedData),
+      });
+    }
+
     let data;
 
     if (type === 'destinationCountry') {
@@ -160,13 +174,17 @@ exports.getData = async (req, res) => {
       total.push(e.count);
     })
 
+    const response = {
+      label,
+      total,
+    }
+
+    await redis.set(cacheKey, JSON.stringify(response), 'EX', 60 * 3);
+
     return res.status(200).json({
       statusCode: 200,
       success: true,
-      data: {
-        label,
-        total,
-      },
+      data: response,
     });
   } catch (error) {
     console.log('Error on getData:', error);
