@@ -21,7 +21,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 // db.attackers = require('../models/Attackers')(sequelize, Sequelize);
 // define model example
-// db.user = require("../models/User")(sequelize, Sequelize);
+// db.users = require("../models/Users")(sequelize, Sequelize);
 
 // relation example
 // relation between role and user

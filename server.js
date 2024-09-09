@@ -41,6 +41,7 @@ app.get("/", (req, res) => {
 
 // routes
 require("./app/routes/exampleRoutes")(app);
+require("./app/routes/userRoutes")(app);
 // app.use(router);
 
 callmeWebSocket(server);

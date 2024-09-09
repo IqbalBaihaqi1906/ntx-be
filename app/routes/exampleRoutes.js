@@ -14,18 +14,22 @@ module.exports = (app) => {
 
   router.get(
     "/refactorme1",
-    // exampleMiddleware.exampleMiddlewareFunction,
+    exampleMiddleware.AuthenticationMiddleware,
+    exampleMiddleware.AuthorizationByRoleMiddleware(['user', 'admin']),
     exampleController.refactoreMe1
   );
 
   router.post(
     "/refactorme2",
-    // exampleMiddleware.exampleMiddlewareFunction,
+    exampleMiddleware.AuthenticationMiddleware,
+    exampleMiddleware.AuthorizationByRoleMiddleware(['user']),
     exampleController.refactoreMe2,
   );
 
   router.get(
     "/attackers",
+    exampleMiddleware.AuthenticationMiddleware,
+    exampleMiddleware.AuthorizationByRoleMiddleware(['user', 'admin']),
     exampleController.getData,
   )
 
