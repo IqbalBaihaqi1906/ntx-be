@@ -21,14 +21,13 @@ module.exports = (app) => {
   router.post(
     "/refactorme2",
     // exampleMiddleware.exampleMiddlewareFunction,
-    exampleController.refactoreMe2
+    exampleController.refactoreMe2,
   );
 
-  // router.get(
-  //   "/",
-  //   [exampleMiddleware.exampleMiddleware],
-  //   exampleController.exampleFunction
-  // );
+  router.get(
+    "/attackers",
+    exampleController.getData,
+  )
 
   app.use("/api/data/", router);
 };

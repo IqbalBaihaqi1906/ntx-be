@@ -23,7 +23,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = require("./app/models");
 const { callmeWebSocket } = require("./app/controllers/exampleController");
 
-db.sequelize.sync();
+db.sequelize.sync()
+  .then(() => console.log('tables created successfully.'))
+  .catch(err => console.error('Unable to create table:', err));
 
 // never enable the code below in production
 // force: true will drop the table if it already exists

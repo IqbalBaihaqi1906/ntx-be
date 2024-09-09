@@ -97,6 +97,17 @@ exports.callmeWebSocket = (server) => {
         try {
           const { data } = await axios.get('https://ltm-prod-api.radware.com/map/attacks?limit=10');
 
+          // set to 30 data to make it faster and not heavy
+          const firstThirtyData = data[0].slice(0, 30);
+
+          const values = firstThirtyData.map(data =>
+            `('${data.sourceCountry.replace(/'/g, "''")}', '${data.destinationCountry.replace(/'/g, "''")}', ${data.millisecond}, '${data.type.replace(/'/g, "''")}', '${data.weight.replace(/'/g, "''")}', '${data.attackTime}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+          ).join(',');
+
+          await db.sequelize.query(
+            `INSERT INTO attackers ("sourceCountry", "destinationCountry", "millisecond", "type", "weight", "attackTime", "createdAt", "updatedAt") VALUES ${values}`,
+          );
+
           ws.send(JSON.stringify(data));
         } catch (error) {
           console.log('Error fetching data:', error);
@@ -109,7 +120,7 @@ exports.callmeWebSocket = (server) => {
 
       ws.on('close', () => {
         console.log('Client disconnected');
-        clearInterval(interval); 
+        clearInterval(interval);
       });
 
       ws.on('error', (error) => {
@@ -121,6 +132,48 @@ exports.callmeWebSocket = (server) => {
   });
 };
 
-exports.getData = (req, res) => {
-  // do something
+exports.getData = async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    if (!type || (type !== 'destinationCountry' && type !== 'sourceCountry')) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: "Invalid Request",
+        success: false,
+      });
+    }
+
+    let data;
+
+    if (type === 'destinationCountry') {
+      data = await db.sequelize.query(`SELECT "destinationCountry" AS country, COUNT(*) AS COUNT FROM attackers GROUP BY "destinationCountry"`);
+    } else if (type === 'sourceCountry') {
+      data = await db.sequelize.query(`SELECT "sourceCountry" AS country, COUNT(*) AS COUNT FROM attackers GROUP BY "sourceCountry"`);
+    }
+
+    const label = [];
+    const total = [];
+
+    data[0].forEach((e) => {
+      label.push(e.country === '  ' ? 'Unidentified Country' : e.country);
+      total.push(e.count);
+    })
+
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      data: {
+        label,
+        total,
+      },
+    });
+  } catch (error) {
+    console.log('Error on getData:', error);
+    return res.status(500).json({
+      statusCode: 500,
+      message: "Internal server error",
+      success: false,
+    });
+  }
 };
